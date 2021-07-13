@@ -26,7 +26,7 @@ public class UserService {
 
 
 
-        // validar el email regex
+        // validar el email regex -ready
         // validar contrasenia
         // validar que no exista ese email
         // obtener el token
@@ -43,6 +43,10 @@ public class UserService {
             throw new UserNotFoundException("This user can not be found, please try again, or contact the admin");
         }
         return userRepository.getById(id);
+    }
+
+    public boolean existEmail(String email) {
+        // if (userRepository.ex)
     }
 
     public List<User> findAll() {
