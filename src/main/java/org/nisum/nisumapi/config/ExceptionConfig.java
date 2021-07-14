@@ -2,8 +2,8 @@ package org.nisum.nisumapi.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.nisum.nisumapi.exceptions.BadRequestException;
-import org.nisum.nisumapi.exceptions.UserNotFoundException;
+import org.nisum.nisumapi.exceptions.*;
+import org.nisum.nisumapi.utils.PasswordValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +33,21 @@ public class ExceptionConfig {
 
     @ExceptionHandler(BadRequestException.class)
     protected ResponseEntity<JsonErrorResponse> badRequestException(BadRequestException e) {
+        return new ResponseEntity<>(new JsonErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailHandlerException.class)
+    protected ResponseEntity<JsonErrorResponse> emailHandlerException(EmailHandlerException e) {
+        return new ResponseEntity<>(new JsonErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadPasswordException.class)
+    protected ResponseEntity<JsonErrorResponse> badPasswordException(BadPasswordException e) {
+        return new ResponseEntity<>(new JsonErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler( BadEmailException.class)
+    protected ResponseEntity<JsonErrorResponse> badEmailException(BadEmailException e) {
         return new ResponseEntity<>(new JsonErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
