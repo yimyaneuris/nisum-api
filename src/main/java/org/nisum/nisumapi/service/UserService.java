@@ -1,72 +1,71 @@
 package org.nisum.nisumapi.service;
 
-import org.nisum.nisumapi.entity.User;
-import org.nisum.nisumapi.exceptions.BadEmailException;
-import org.nisum.nisumapi.exceptions.BadPasswordException;
-import org.nisum.nisumapi.exceptions.EmailHandlerException;
-import org.nisum.nisumapi.exceptions.UserNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.nisum.nisumapi.dto.converter.Converter;
+import org.nisum.nisumapi.dto.resquest.UserDTORequest;
+import org.nisum.nisumapi.exceptions.ResourceNotFoundException;
+import org.nisum.nisumapi.model.Phone;
+import org.nisum.nisumapi.model.User;
 import org.nisum.nisumapi.repository.PhoneRepository;
 import org.nisum.nisumapi.repository.UserRepository;
-import org.nisum.nisumapi.utils.EmailValidator;
-import org.nisum.nisumapi.utils.Token;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserService {
 
-    final UserRepository userRepository;
-    final PhoneRepository phoneRepository;
+    private final UserRepository userRepository;
+    private final Converter converter;
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    public UserService(UserRepository userRepository, PhoneRepository phoneRepository) {
-        this.userRepository = userRepository;
-        this.phoneRepository = phoneRepository;
-    }
+    @Value("${encrypted.password}")
+    private String passEncrypt;
 
-    public User create(User user) {
+    public User insert(UserDTORequest userDTO) {
 
-         if(!EmailValidator.validateEmail(user.getEmail())) {
-            throw new BadEmailException("This email is not valid");
-        };
+        User user = converter.userDTORequestToUser(userDTO);
 
-        //TODO validar por que no esta pasando el password
-//        if(!PasswordValidator.validatePassword(user.getPassword())){
-//            throw new BadPasswordException("Password is invalid");
-//        };
-        Optional<User> op = userRepository.findByEmail(user.getEmail());
+        user.setToken(TokenService.generateToken(user));
+        user.setPasswordHash(passEncrypt);
+        user.setActive(true);
 
-        if(op.isPresent()) {
-            throw new EmailHandlerException("This email already exist");
+        if (userDTO.getPhones() != null) {
+            List<Phone> phoneList = new ArrayList<>();
+            userDTO.getPhones()
+                    .stream()
+                    .map(p -> new Phone(p.getId(), p.getNumber(), p.getCitycode(), p.getCountrycode(), user))
+                    .forEach(phoneList::add);
+
+            user.setPhones(phoneList);
         }
-
-        user.setToken(Token.createJWT("", "", "", 1000));
-        user.setCreated(LocalDate.now());
-        user.setModified(LocalDate.now());
-        user.setLast_login(LocalDate.now());
-
-        User userCreated = userRepository.save(user);
-
-        user.getPhones().forEach(phone -> {
-            phone.setUser(user);
-            phoneRepository.save(phone);
-        });
-
-        return userCreated;
+        userRepository.save(user);
+        logger.debug("Created Information for User: {}", user);
+        return user;
     }
 
-    public User findById(Long id) {
+    public Optional<User> findById(long id) {
+
         if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("This user can not be found, please try again, or contact the admin");
+            throw new ResourceNotFoundException("This user can not be found, please try again, or contact the admin");
         }
-        return userRepository.getById(id);
+
+        return userRepository.findById(id);
     }
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
