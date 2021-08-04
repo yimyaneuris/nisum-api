@@ -77,6 +77,5 @@ public class UserController {
 
         User user = userService.insert(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
-
     }
 }

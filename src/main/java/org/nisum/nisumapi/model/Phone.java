@@ -30,5 +30,4 @@ public class Phone implements Serializable {
     @JsonBackReference
     @NotNull
     private User user;
-
 }

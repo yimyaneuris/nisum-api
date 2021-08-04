@@ -18,7 +18,7 @@ public class TokenService {
         try {
             SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.ES256;
             HashMap<String, Object> header = new HashMap<String, Object>();
-            header.put("alg", signatureAlgorithm.toString()); //HS256
+            header.put("alg", signatureAlgorithm.toString());
             header.put("typ", "JWT");
 
             JwtBuilder tokenJWT = Jwts

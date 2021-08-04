@@ -10,8 +10,7 @@ import java.util.regex.Pattern;
 
 public class Validations {
 
-    public static boolean validatePassword(final String password)
-    {
+    public static boolean validatePassword(final String password) {
         Pattern p = Pattern.compile(Constants.PASSWORD_REGEX);
         Matcher m = p.matcher(password);
         return m.matches();
