@@ -27,22 +27,29 @@ public class User implements Serializable {
 
     @Email(message = "This email is not a valid.")
     @Size(min = 5, max = 100)
-    @Column(length = 100, unique = true)
+    @Column(length = 100)
+    @NonNull
     private String email;
 
     @JsonIgnore
-    @NotNull
+    @NonNull
+    @Column(name = "password_hash")
     private String passwordHash;
 
+    @NonNull
     private String token;
 
+    @NonNull
     private LocalDateTime created = LocalDateTime.now();
 
+    @NonNull
     private LocalDateTime modified = LocalDateTime.now();
 
+    @NonNull
+    @Column(name = "last_login")
     private LocalDateTime lastLogin = LocalDateTime.now();
 
-    @NotNull
+    @NonNull
     @Column(nullable = false)
     private boolean active = false;
 

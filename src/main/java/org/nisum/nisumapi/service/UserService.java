@@ -6,11 +6,11 @@ import org.nisum.nisumapi.dto.resquest.UserDTORequest;
 import org.nisum.nisumapi.exceptions.ResourceNotFoundException;
 import org.nisum.nisumapi.model.Phone;
 import org.nisum.nisumapi.model.User;
-import org.nisum.nisumapi.repository.PhoneRepository;
 import org.nisum.nisumapi.repository.UserRepository;
+import org.nisum.nisumapi.utils.Properties;
+import org.nisum.nisumapi.utils.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,17 +25,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final Converter converter;
+    private final Properties properties;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Value("${encrypted.password}")
-    private String passEncrypt;
+
 
     public User insert(UserDTORequest userDTO) {
 
         User user = converter.userDTORequestToUser(userDTO);
 
-        user.setToken(TokenService.generateToken(user));
-        user.setPasswordHash(passEncrypt);
+        user.setToken(Token.generateToken(user));
+        user.setPasswordHash(properties.getPassEncrypt());
         user.setActive(true);
 
         if (userDTO.getPhones() != null) {
@@ -48,7 +48,9 @@ public class UserService {
             user.setPhones(phoneList);
         }
         userRepository.save(user);
+
         logger.debug("Created Information for User: {}", user);
+
         return user;
     }
 

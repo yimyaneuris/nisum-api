@@ -1,17 +1,15 @@
-package org.nisum.nisumapi.service;
+package org.nisum.nisumapi.utils;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.nisum.nisumapi.model.User;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 
-@Service
-public class TokenService {
+public class Token {
 
     public static String generateToken(User user) {
 

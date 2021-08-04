@@ -6,8 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Getter()
-public class CustomProperties {
+public class Properties {
 
     @Value("${email.validation}")
     private String emailValidation;
+
+    @Value("${password.regexp}")
+    private String regexp;
+
+    @Value("${encrypted.password}")
+    private String passEncrypt;
 }
