@@ -28,7 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final Converter userConverter;
-    private final Properties customProperties;
+    private final Properties properties;
     private final Validations validations;
 
     @GetMapping
@@ -64,11 +64,11 @@ public class UserController {
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTORequest userDTO) {
 
         if(!validations.validatePassword(userDTO.password)) {
-            throw new BadRequestException(customProperties.getEmailValidation());
+            throw new BadRequestException(properties.getEmailValidation());
         }
 
         if(userDTO.getEmail().isEmpty()) {
-            throw new BadRequestException("A new user cannot already have an email");
+            throw new BadRequestException("Email is required");
         }
 
         if (userService.findByEmail(userDTO.getEmail()).isPresent()) {

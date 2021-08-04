@@ -13,6 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class UserDTORequest implements Serializable {
 

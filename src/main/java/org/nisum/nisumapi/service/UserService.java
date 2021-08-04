@@ -28,8 +28,6 @@ public class UserService {
     private final Properties properties;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-
-
     public User insert(UserDTORequest userDTO) {
 
         User user = converter.userDTORequestToUser(userDTO);
