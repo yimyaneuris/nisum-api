@@ -9,9 +9,8 @@ import org.nisum.nisumapi.exceptions.InternalServerErrorException;
 import org.nisum.nisumapi.exceptions.ResourceNotFoundException;
 import org.nisum.nisumapi.model.User;
 import org.nisum.nisumapi.service.UserService;
-import org.nisum.nisumapi.utils.CustomProperties;
+import org.nisum.nisumapi.utils.Properties;
 import org.nisum.nisumapi.utils.Validations;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,8 @@ public class UserController {
 
     private final UserService userService;
     private final Converter userConverter;
-    private final CustomProperties customProperties;
+    private final Properties customProperties;
+    private final Validations validations;
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
@@ -63,11 +63,11 @@ public class UserController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTORequest userDTO) {
 
-        if(!Validations.validatePassword(userDTO.password)) {
+        if(!validations.validatePassword(userDTO.password)) {
             throw new BadRequestException(customProperties.getEmailValidation());
         }
 
-        if(userDTO.email.isEmpty()) {
+        if(userDTO.getEmail().isEmpty()) {
             throw new BadRequestException("A new user cannot already have an email");
         }
 
@@ -76,6 +76,8 @@ public class UserController {
         }
 
         User user = userService.insert(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        UserDTOResponse userDTOResponse = userConverter.userToDTO(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDTOResponse);
     }
 }

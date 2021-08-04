@@ -1,0 +1,2 @@
+insert into users (name, email, password_hash, token, created, modified, last_login, active) values ('Petter', 'Petter@a.com', 'kl', 'olp', '2021-01-01', '2021-01-01', '2021-01-01', true);
+insert into users (name, email, password_hash, token, created, modified, last_login, active) values ('Jhon', 'Jhon@pp.com', 'klww', 'olpqq', '2021-02-01', '2021-02-01', '2021-02-01', true);

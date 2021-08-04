@@ -8,8 +8,8 @@
 		<version>2.5.3</version>
 		<relativePath/>
 	</parent>
-	<groupId>co</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>org.nisum</groupId>
+	<artifactId>nisum-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Nisum api project</description>
 	<properties>

@@ -11,19 +11,21 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
+@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 public class UserDTORequest implements Serializable {
 
     @NonNull
-    public String name;
+    private String name;
 
     @Email
     @NonNull
-    public String email;
+    private String email;
 
     @NotBlank(message = "password is mandatory")
-    // @Pattern(regexp = Constants.PASSWORD_REGEX, message = "")
+    @NonNull
     public String password;
 
-    public List<Phone> phones;
+    private List<Phone> phones;
 }
